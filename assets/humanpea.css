@@ -133,7 +133,7 @@ header span {
 
 .hp-mark{
   font-family:"Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight:700 !important;   /* try 700; if you want even heavier, use 800 */
+  font-weight:800 !important;   /* try 700; if you want even heavier, use 800 */
   letter-spacing:.14em;
   text-transform:uppercase;
   color:#000;
