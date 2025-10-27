@@ -1,23 +1,56 @@
-/* HUMANPEA THEME GLOBALS */
+/* ==========================================================
+   HUMANPEA THEME — FULL STYLE SHEET
+   Matches main humanpea.com design (Windows + macOS compatible)
+   ========================================================== */
+
+/* --- Brand Palette --- */
 :root {
   --hp-green: #00C853;
   --hp-black: #000000;
   --hp-white: #ffffff;
   --hp-header-h: 64px;
+
+  /* Override Dawn’s global font variables */
+  --font-body-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --font-heading-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --font-body-style: normal;
+  --font-heading-style: normal;
+  --font-body-weight: 400;
+  --font-body-weight-bold: 700;
 }
 
-/* GLOBAL STYLES */
+/* --- Font-face Declaration --- */
+@font-face {
+  font-family: "Helvetica Neue";
+  src: local("Helvetica Neue"), local("HelveticaNeue"),
+       local("Helvetica"), local("Arial");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- Base Layout --- */
 body {
   background-color: var(--hp-white);
   color: var(--hp-black);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-body-family);
   letter-spacing: 0.015em;
-  padding-top: var(--hp-header-h); /* Prevents content from hiding behind header */
+  padding-top: var(--hp-header-h);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* BUTTONS */
+.section,
+.shopify-section {
+  background: var(--hp-white) !important;
+  border: none !important;
+}
+
+/* --- Buttons --- */
 .button,
-.button-primary {
+.button--primary,
+.shopify-payment-button__button--unbranded {
   background: var(--hp-green);
   border-color: var(--hp-green);
   color: var(--hp-white);
@@ -31,48 +64,32 @@ body {
   filter: brightness(0.9);
 }
 
-/* FOOTER LINKS */
+/* --- Footer --- */
+.footer {
+  background: var(--hp-white);
+  color: var(--hp-black);
+  border-top: 1px solid #eee;
+}
 .footer a {
   color: var(--hp-black);
   opacity: 0.75;
   transition: opacity 0.2s ease-in-out;
 }
-
 .footer a:hover {
   opacity: 1;
 }
 
-/* ------------------------------ */
-/*         HUMANPEA HEADER        */
-/* ------------------------------ */
+/* ==========================================================
+   HEADER — HUMANPEA LONDON
+   ========================================================== */
 
-/* HUMANPEA header — STICKY */
-:root { --hp-header-h: 64px; }
-
-.hp-header{
-  position: sticky; top: 0; z-index: 100;
+.hp-header {
+  position: sticky; /* change to fixed if you want it always visible */
+  top: 0;
+  z-index: 100;
   height: var(--hp-header-h);
-  background:#fff; border-bottom:1px solid #eee;
-}
-
-.hp-container{
-  max-width:1100px; margin:0 auto;
-  display:flex; align-items:center; justify-content:space-between;
-  height:100%; padding:0 40px;
-}
-
-.hp-mark{
-  font-size:12px; font-weight:800; letter-spacing:.14em;
-  color:#000; text-decoration:none; text-transform:uppercase;
-}
-
-.hp-meta{
-  font-size:11px; font-weight:600; letter-spacing:.06em;
-  color:rgba(0,0,0,.65); text-transform:uppercase;
-}
-
-/* remove earlier padding from body */
-body { padding-top: 0 !important; }
+  background: var(--hp-white);
+  border-bottom: 1px solid #eee;
 }
 
 .hp-container {
@@ -81,30 +98,37 @@ body { padding-top: 0 !important; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
   padding: 0 40px;
 }
 
-/* BRAND MARK (left text) */
-.hp-mark {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 800; /* bolder */
-  color: var(--hp-black);
-  letter-spacing: 0.14em;
+.hp-mark,
+.hp-meta {
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Left: HUMANPEA LONDON */
+.hp-mark {
+  font-size: 12px;
+  font-weight: 700; /* identical to main site */
+  letter-spacing: 0.14em;
+  color: #000;
   text-decoration: none;
 }
 
-/* META TAG (right text) */
+/* Right: 00C853 / LIMITED SERIES */
 .hp-meta {
   font-size: 11px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.65);
+  font-weight: 500;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.65);
 }
 
-/* SEPARATOR LINE BELOW HEADER */
+/* Slight divider line */
 .hp-header::after {
   content: "";
   display: block;
@@ -116,36 +140,15 @@ body { padding-top: 0 !important; }
   background: #eee;
 }
 
-/* Force-match header typography to humanpea.com */
-.hp-mark,
-.hp-meta,
-header a,
-header span {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight: 500 !important; /* match humanpea.com */
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  color: #000 !important;
+/* --- Responsive adjustments --- */
+@media (max-width: 768px) {
+  .hp-container {
+    padding: 0 20px;
+  }
+  .hp-mark {
+    font-size: 11px;
+  }
+  .hp-meta {
+    font-size: 10px;
+  }
 }
-
-/* Header weight tuning to match humanpea.com */
-.hp-container { justify-content: space-between; }  /* keep L/R layout */
-
-.hp-mark{
-  font-family:"Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight:750 !important;   /* try 700; if you want even heavier, use 800 */
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#000;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.hp-meta{
-  font-family:"Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight:500 !important;   /* lighter than the mark */
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  color:rgba(0,0,0,.65);
-}
-
