@@ -115,3 +115,15 @@ body { padding-top: 0 !important; }
   height: 1px;
   background: #eee;
 }
+
+/* Force-match header typography to humanpea.com */
+.hp-mark,
+.hp-meta,
+header a,
+header span {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-weight: 500 !important; /* match humanpea.com */
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #000 !important;
+}
