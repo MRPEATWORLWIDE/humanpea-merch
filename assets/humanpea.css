@@ -1,127 +1,99 @@
-/* === HUMANPEA OVERHAUL === */
-
-/* Brand palette */
+/* HUMANPEA THEME GLOBALS */
 :root {
   --hp-green: #00C853;
   --hp-black: #000000;
   --hp-white: #ffffff;
+  --hp-header-h: 64px;
 }
 
-/* General body styles */
+/* GLOBAL STYLES */
 body {
   background-color: var(--hp-white);
   color: var(--hp-black);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 15px;
-  letter-spacing: 0.01em;
-  line-height: 1.5;
-  overflow-x: hidden;
+  letter-spacing: 0.015em;
+  padding-top: var(--hp-header-h); /* Prevents content from hiding behind header */
 }
 
-/* Remove Dawn’s grey tint */
-.section,
-.shopify-section {
-  background: var(--hp-white) !important;
-  border: none !important;
-}
-
-/* Header */
-.header {
-  background: var(--hp-white);
-  border-bottom: 1px solid #eee;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
-.header__heading-link,
-.header__menu-item {
-  color: var(--hp-black) !important;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-.header__menu-item:hover {
-  color: var(--hp-green);
-}
-
-/* Buttons */
+/* BUTTONS */
 .button,
-.button--primary,
-.shopify-payment-button__button--unbranded {
+.button-primary {
   background: var(--hp-green);
   border-color: var(--hp-green);
   color: var(--hp-white);
-  border-radius: 12px;
+  border-radius: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 12px 20px;
-  transition: all 0.2s ease;
+  letter-spacing: 0.08em;
+  transition: filter 0.2s ease-in-out;
 }
+
 .button:hover {
   filter: brightness(0.9);
 }
 
-/* Section spacing */
-.section {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-
-/* Product grid */
-.grid__item {
-  border-radius: 10px;
-  overflow: hidden;
-  transition: transform 0.25s ease;
-}
-.grid__item:hover {
-  transform: translateY(-4px);
-}
-.card__information {
-  padding-top: 1rem;
-}
-.card__heading a {
-  color: var(--hp-black);
-  font-weight: 600;
-  font-size: 1rem;
-}
-.price-item--regular {
-  color: var(--hp-green);
-  font-weight: 700;
-}
-
-/* Footer */
-.footer {
-  background: var(--hp-white);
-  color: var(--hp-black);
-  border-top: 1px solid #eee;
-}
-.footer__content,
-.footer__content-bottom {
-  justify-content: center;
-  text-align: center;
-}
+/* FOOTER LINKS */
 .footer a {
   color: var(--hp-black);
   opacity: 0.75;
+  transition: opacity 0.2s ease-in-out;
 }
+
 .footer a:hover {
   opacity: 1;
 }
-/* HUMANPEA header */
-.hp-header{
-  position: sticky; top: 0; z-index: 50;
-  background:#fff; border-bottom:1px solid #eee;
+
+/* ------------------------------ */
+/*         HUMANPEA HEADER        */
+/* ------------------------------ */
+
+.hp-header {
+  position: fixed; /* stays visible when scrolling */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--hp-header-h);
+  background: var(--hp-white);
+  border-bottom: 1px solid #eee;
 }
-.hp-container{
-  max-width:1120px; margin:0 auto;
-  height:56px; display:flex; align-items:center; justify-content:space-between;
-  padding:0 20px;
+
+.hp-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
 }
-.hp-mark{
-  color:#000; text-decoration:none; font-size:12px; font-weight:600;
-  letter-spacing:.14em;
+
+/* BRAND MARK (left text) */
+.hp-mark {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800; /* bolder */
+  color: var(--hp-black);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
 }
-.hp-meta{
-  color:rgba(0,0,0,.6); font-size:11px; letter-spacing:.06em;
+
+/* META TAG (right text) */
+.hp-meta {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.65);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
-@media (min-width:1024px){
-  .hp-container{ height:64px; padding:0 24px; }
+
+/* SEPARATOR LINE BELOW HEADER */
+.hp-header::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #eee;
 }
