@@ -1,0 +1,31 @@
+/* HUMANPEA – safe theme overrides */
+
+/* Brand colors */
+:root {
+  --hp-green: #00C853;
+  --hp-black: #000000;
+  --hp-white: #ffffff;
+}
+
+/* Button style overrides */
+.button,
+.button--primary,
+.shopify-payment-button__button--unbranded {
+  background: var(--hp-green);
+  border-color: var(--hp-green);
+  color: var(--hp-white);
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  filter: brightness(0.9);
+}
+
+/* Fonts (keeps Dawn’s system structure intact) */
+:root {
+  --font-body-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-heading-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
