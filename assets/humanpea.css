@@ -1,31 +1,107 @@
-/* HUMANPEA – safe theme overrides */
+/* === HUMANPEA OVERHAUL === */
 
-/* Brand colors */
+/* Brand palette */
 :root {
   --hp-green: #00C853;
   --hp-black: #000000;
   --hp-white: #ffffff;
 }
 
-/* Button style overrides */
+/* General body styles */
+body {
+  background-color: var(--hp-white);
+  color: var(--hp-black);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* Remove Dawn’s grey tint */
+.section,
+.shopify-section {
+  background: var(--hp-white) !important;
+  border: none !important;
+}
+
+/* Header */
+.header {
+  background: var(--hp-white);
+  border-bottom: 1px solid #eee;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.header__heading-link,
+.header__menu-item {
+  color: var(--hp-black) !important;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.header__menu-item:hover {
+  color: var(--hp-green);
+}
+
+/* Buttons */
 .button,
 .button--primary,
 .shopify-payment-button__button--unbranded {
   background: var(--hp-green);
   border-color: var(--hp-green);
   color: var(--hp-white);
-  border-radius: 10px;
+  border-radius: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
+  padding: 12px 20px;
   transition: all 0.2s ease;
 }
-
 .button:hover {
   filter: brightness(0.9);
 }
 
-/* Fonts (keeps Dawn’s system structure intact) */
-:root {
-  --font-body-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-heading-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+/* Section spacing */
+.section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+/* Product grid */
+.grid__item {
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.25s ease;
+}
+.grid__item:hover {
+  transform: translateY(-4px);
+}
+.card__information {
+  padding-top: 1rem;
+}
+.card__heading a {
+  color: var(--hp-black);
+  font-weight: 600;
+  font-size: 1rem;
+}
+.price-item--regular {
+  color: var(--hp-green);
+  font-weight: 700;
+}
+
+/* Footer */
+.footer {
+  background: var(--hp-white);
+  color: var(--hp-black);
+  border-top: 1px solid #eee;
+}
+.footer__content,
+.footer__content-bottom {
+  justify-content: center;
+  text-align: center;
+}
+.footer a {
+  color: var(--hp-black);
+  opacity: 0.75;
+}
+.footer a:hover {
+  opacity: 1;
 }
