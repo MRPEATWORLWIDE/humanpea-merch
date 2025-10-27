@@ -137,3 +137,20 @@ body {
     font-size: 10px;
   }
 }
+
+/* Card polish */
+.card, .product-card-wrapper { border:1px solid #eee; border-radius:14px; background:#fff; }
+.card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+.price-item--regular { color:#000; }
+.price-item--sale { color:#00C853; font-weight:700; }
+
+/* Buttons */
+.button, .button--primary, .shopify-payment-button__button--unbranded {
+  background:#00C853; border-color:#00C853; color:#fff; border-radius:10px; text-transform:uppercase; letter-spacing:.08em;
+}
+.button:hover { filter:brightness(.92); }
+
+/* Section spacing trim */
+.section { padding-top:32px; padding-bottom:32px; }
+
+
