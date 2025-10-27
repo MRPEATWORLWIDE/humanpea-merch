@@ -1,6 +1,5 @@
 /* ==========================================================
-   HUMANPEA THEME — FULL STYLE SHEET
-   Matches main humanpea.com design (Windows + macOS compatible)
+   HUMANPEA THEME — CLEAN + FINAL STABLE VERSION
    ========================================================== */
 
 /* --- Brand Palette --- */
@@ -9,34 +8,17 @@
   --hp-black: #000000;
   --hp-white: #ffffff;
   --hp-header-h: 64px;
-
-  /* Override Dawn’s global font variables */
-  --font-body-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-  --font-heading-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-  --font-body-style: normal;
-  --font-heading-style: normal;
-  --font-body-weight: 400;
-  --font-body-weight-bold: 700;
-}
-
-/* --- Font-face Declaration --- */
-@font-face {
-  font-family: "Helvetica Neue";
-  src: local("Helvetica Neue"), local("HelveticaNeue"),
-       local("Helvetica"), local("Arial");
-  font-weight: 400 900;
-  font-style: normal;
-  font-display: swap;
 }
 
 /* --- Base Layout --- */
 body {
   background-color: var(--hp-white);
   color: var(--hp-black);
-  font-family: var(--font-body-family);
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: 400;
   letter-spacing: 0.015em;
-  padding-top: var(--hp-header-h);
   margin: 0;
+  padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -84,7 +66,7 @@ body {
    ========================================================== */
 
 .hp-header {
-  position: sticky; /* change to fixed if you want it always visible */
+  position: sticky;
   top: 0;
   z-index: 100;
   height: var(--hp-header-h);
@@ -102,33 +84,35 @@ body {
   padding: 0 40px;
 }
 
+/* --- FONT FIXES --- */
+/* Forces same font rendering and weight as humanpea.com on Windows */
 .hp-mark,
 .hp-meta {
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif !important;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
   text-transform: uppercase;
   line-height: 1;
 }
 
-/* Left: HUMANPEA LONDON */
+/* Left label: HUMANPEA® LONDON */
 .hp-mark {
   font-size: 12px;
-  font-weight: 700; /* identical to main site */
-  letter-spacing: 0.14em;
-  color: #000;
+  font-weight: 700; /* bold to match */
+  letter-spacing: 0.18em;
+  color: #000 !important;
   text-decoration: none;
 }
 
-/* Right: 00C853 / LIMITED SERIES */
+/* Right label: 00C853 / LIMITED SERIES */
 .hp-meta {
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: rgba(0, 0, 0, 0.65);
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  color: rgba(0, 0, 0, 0.65) !important;
 }
 
-/* Slight divider line */
+/* Divider line */
 .hp-header::after {
   content: "";
   display: block;
@@ -140,13 +124,14 @@ body {
   background: #eee;
 }
 
-/* --- Responsive adjustments --- */
+/* --- Responsive --- */
 @media (max-width: 768px) {
   .hp-container {
     padding: 0 20px;
   }
   .hp-mark {
     font-size: 11px;
+    letter-spacing: 0.15em;
   }
   .hp-meta {
     font-size: 10px;
