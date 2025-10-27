@@ -153,4 +153,27 @@ body {
 /* Section spacing trim */
 .section { padding-top:32px; padding-bottom:32px; }
 
+/* HUMANPEA footer */
+.hp-footer{
+  background:#fff;
+  border-top:1px solid #eee;
+}
+.hp-footer__inner{
+  max-width:1100px;
+  margin:0 auto;
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px;
+  color:rgba(0,0,0,.6);
+  font-size:12px;
+  letter-spacing:0.02em;
+}
+.hp-korean{ letter-spacing:.18em; }
+@media (max-width:768px){
+  .hp-footer__inner{ padding:0 20px; font-size:11px; }
+}
+
+
 
