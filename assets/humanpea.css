@@ -105,3 +105,23 @@ body {
 .footer a:hover {
   opacity: 1;
 }
+/* HUMANPEA header */
+.hp-header{
+  position: sticky; top: 0; z-index: 50;
+  background:#fff; border-bottom:1px solid #eee;
+}
+.hp-container{
+  max-width:1120px; margin:0 auto;
+  height:56px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px;
+}
+.hp-mark{
+  color:#000; text-decoration:none; font-size:12px; font-weight:600;
+  letter-spacing:.14em;
+}
+.hp-meta{
+  color:rgba(0,0,0,.6); font-size:11px; letter-spacing:.06em;
+}
+@media (min-width:1024px){
+  .hp-container{ height:64px; padding:0 24px; }
+}
