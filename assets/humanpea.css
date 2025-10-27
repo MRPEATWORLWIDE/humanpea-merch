@@ -127,3 +127,25 @@ header span {
   text-transform: uppercase !important;
   color: #000 !important;
 }
+
+/* Header weight tuning to match humanpea.com */
+.hp-container { justify-content: space-between; }  /* keep L/R layout */
+
+.hp-mark{
+  font-family:"Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-weight:700 !important;   /* try 700; if you want even heavier, use 800 */
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#000;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hp-meta{
+  font-family:"Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-weight:500 !important;   /* lighter than the mark */
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:rgba(0,0,0,.65);
+}
+
