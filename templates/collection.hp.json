@@ -1,0 +1,10 @@
+{
+  "name": "Collection / HP Full-bleed",
+  "sections": {
+    "main": {
+      "type": "hp-collection-grid",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
