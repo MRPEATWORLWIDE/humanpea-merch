@@ -1,25 +1,45 @@
-{% comment %} HUMANPEA product card (ALD-style) — fixed image_tag args {% endcomment %}
-{%- assign prod = card_product | default: product -%}
-{%- assign first_image = prod.featured_media -%}
-{%- assign second_image = prod.media[1] -%}
+{% comment %}
+  HUMANPEA Product Card (ALD-style) – full fixed version
+  • Handles featured_media, featured_image, or empty state (placeholder)
+  • Hover-swap on second image
+  • Shows Sold Out badge
+  • Includes Quick Add or Select Options
+{% endcomment %}
 
-{%- assign alt_primary = first_image.alt | default: prod.title | escape -%}
-{%- if second_image -%}
-  {%- assign alt_secondary = second_image.alt | default: prod.title | escape -%}
+{%- assign prod = card_product | default: product -%}
+
+{%- assign prim_media = prod.featured_media | default: prod.featured_image -%}
+{%- if prim_media and prim_media.preview_image -%}
+  {%- assign prim_img = prim_media.preview_image -%}
+{%- else -%}
+  {%- assign prim_img = prim_media -%}
 {%- endif -%}
+
+{%- assign sec_media = prod.media[1] -%}
+{%- if sec_media and sec_media.preview_image -%}
+  {%- assign sec_img = sec_media.preview_image -%}
+{%- else -%}
+  {%- assign sec_img = sec_media -%}
+{%- endif -%}
+
+{%- assign alt_primary = prod.title | escape -%}
+{%- assign alt_secondary = prod.title | escape -%}
 
 <div class="hp-card">
   <a href="{{ prod.url }}" class="hp-card__link" aria-label="{{ prod.title | escape }}">
     <div class="hp-card__media">
-      {%- if first_image -%}
-        {{ first_image
+      {%- if prim_img -%}
+        {{ prim_img
           | image_url: width: 900
           | image_tag: alt: alt_primary, class: 'hp-card__img hp-card__img--primary', loading: 'lazy'
         }}
+      {%- else -%}
+        {%- capture ph_key -%}product-apparel-{{ forloop.index0 | default: 0 | modulo: 6 | plus: 1 }}{%- endcapture -%}
+        {{ ph_key | placeholder_svg_tag: 'hp-card__placeholder' }}
       {%- endif -%}
 
-      {%- if second_image -%}
-        {{ second_image
+      {%- if sec_img -%}
+        {{ sec_img
           | image_url: width: 900
           | image_tag: alt: alt_secondary, class: 'hp-card__img hp-card__img--secondary', loading: 'lazy'
         }}
@@ -42,7 +62,12 @@
     <product-form class="hp-card__quick">
       {%- form 'product', prod, id: 'quick-add-' | append: prod.id, novalidate: 'novalidate' -%}
         {%- if prod.variants.size == 1 and prod.variants.first.available -%}
-          <button type="submit" name="add" class="hp-btn hp-btn--quiet" data-add-to-cart>
+          <button
+            type="submit"
+            name="add"
+            class="hp-btn hp-btn--quiet"
+            data-add-to-cart
+          >
             Add to cart
           </button>
         {%- else -%}
