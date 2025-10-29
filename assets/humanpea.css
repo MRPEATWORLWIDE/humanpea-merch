@@ -65,3 +65,72 @@
 
 /* If you previously used 100vw breakout, prevent sideways scroll: */
 /* html, body { overflow-x: hidden; } */
+
+/* === HUMANPEA — full-bleed ALD-style collection layout (no section edits) === */
+
+/* Kill Dawn’s fixed container on collection pages */
+.template-collection .page-width {
+  max-width: none;
+  padding-inline: clamp(16px, 2.5vw, 32px);
+}
+
+/* Make product grid 4-across with responsive downshifts */
+.template-collection ul#product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 28px);
+  margin: 0; /* remove unexpected gaps */
+  padding: 0; /* we’re controlling padding on .page-width */
+  list-style: none;
+}
+
+@media (max-width: 1200px) {
+  .template-collection ul#product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .template-collection ul#product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .template-collection ul#product-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Card visuals to get the clean tile look */
+.template-collection .card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Make images square and cover the tile, like ALD */
+.template-collection .card__media {
+  aspect-ratio: 1 / 1;
+  background: #f5f5f5;
+}
+.template-collection .card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Optional: subtle lift on hover */
+.template-collection .card:hover {
+  transform: translateY(-3px);
+  transition: transform .2s ease;
+}
+
+/* Sold-out badge styling tweak (optional) */
+.template-collection .badge {
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: .02em;
+}
+
