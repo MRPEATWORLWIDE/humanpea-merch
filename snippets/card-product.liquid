@@ -1,30 +1,33 @@
-{% comment %} HUMANPEA product card (ALD-style) {% endcomment %}
+{% comment %} HUMANPEA product card (ALD-style) — fixed image_tag args {% endcomment %}
 {%- assign prod = card_product | default: product -%}
 {%- assign first_image = prod.featured_media -%}
 {%- assign second_image = prod.media[1] -%}
+
+{%- assign alt_primary = first_image.alt | default: prod.title | escape -%}
+{%- if second_image -%}
+  {%- assign alt_secondary = second_image.alt | default: prod.title | escape -%}
+{%- endif -%}
 
 <div class="hp-card">
   <a href="{{ prod.url }}" class="hp-card__link" aria-label="{{ prod.title | escape }}">
     <div class="hp-card__media">
       {%- if first_image -%}
-        {{ first_image | image_url: width: 900 | image_tag:
-          loading: 'lazy',
-          alt: first_image.alt | escape,
-          class: 'hp-card__img hp-card__img--primary'
+        {{ first_image
+          | image_url: width: 900
+          | image_tag: alt: alt_primary, class: 'hp-card__img hp-card__img--primary', loading: 'lazy'
         }}
       {%- endif -%}
 
       {%- if second_image -%}
-        {{ second_image | image_url: width: 900 | image_tag:
-          loading: 'lazy',
-          alt: second_image.alt | escape,
-          class: 'hp-card__img hp-card__img--secondary'
+        {{ second_image
+          | image_url: width: 900
+          | image_tag: alt: alt_secondary, class: 'hp-card__img hp-card__img--secondary', loading: 'lazy'
         }}
       {%- endif -%}
 
-      {%- if prod.available == false -%}
+      {%- unless prod.available -%}
         <span class="hp-badge hp-badge--soldout">Sold out</span>
-      {%- endif -%}
+      {%- endunless -%}
     </div>
 
     <div class="hp-card__meta">
@@ -39,12 +42,9 @@
     <product-form class="hp-card__quick">
       {%- form 'product', prod, id: 'quick-add-' | append: prod.id, novalidate: 'novalidate' -%}
         {%- if prod.variants.size == 1 and prod.variants.first.available -%}
-          <button
-            type="submit"
-            name="add"
-            class="hp-btn hp-btn--quiet"
-            data-add-to-cart
-          >Add to cart</button>
+          <button type="submit" name="add" class="hp-btn hp-btn--quiet" data-add-to-cart>
+            Add to cart
+          </button>
         {%- else -%}
           <a href="{{ prod.url }}" class="hp-btn hp-btn--quiet">Select options</a>
         {%- endif -%}
