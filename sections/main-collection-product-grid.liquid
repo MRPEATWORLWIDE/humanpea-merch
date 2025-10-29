@@ -1,95 +1,143 @@
-{% comment %} HumanPea – ALD-style collection grid with infinite scroll {% endcomment %}
-<section class="hp-collection hp-ald" data-section-id="{{ section.id }}">
+{% comment %}
+  HumanPea – Full-bleed Collection Grid (ALD-style)
+  - No Dawn .page-width wrapper (edge-to-edge layout)
+  - 4 / 3 / 2 responsive columns (styled via assets/humanpea.css)
+  - Optional infinite scroll that appends next pages into the same grid
+{% endcomment %}
+
+<section class="hp-ald" data-section-id="{{ section.id }}">
+  <!-- Sticky top bar (kept minimal; style in humanpea.css) -->
   <div class="hp-collection__bar">
-    <button class="hp-filter-toggle" data-filter-toggle>Filter</button>
-    <h1 class="hp-collection__title">{{ collection.title | escape }}</h1>
-    {%- render 'collection-sorting' -%}
+    <button class="hp-filter-toggle" type="button">Filter</button>
+    <div class="hp-collection__title">{{ collection.title | escape }}</div>
+    <div class="hp-collection__meta"></div>
   </div>
 
   <div class="hp-collection__content">
-    <aside class="hp-filters" data-filters hidden>
-      {%- render 'facets', results: collection, enable_filtering: true, enable_sorting: true -%}
-    </aside>
+    {% paginate collection.products by section.settings.items_per_page %}
+      <div class="hp-grid hp-grid--ald">
+        {% for product in collection.products %}
+          <article class="hp-card" role="article">
+            <a class="hp-card__link" href="{{ product.url }}">
+              <div class="hp-card__media">
+                {% unless product.available %}
+                  <span class="hp-badge">SOLD OUT</span>
+                {% endunless %}
 
-    {%- paginate collection.products by 24 -%}
-      <div id="hp-grid" class="hp-grid hp-grid--ald">
-        {%- for product in collection.products -%}
-          {%- render 'card-product', card_product: product, show_quick_add: false -%}
-        {%- endfor -%}
+                {%- assign first = product.featured_media -%}
+                {% if first %}
+                  {{ first
+                    | image_url: width: 1200
+                    | image_tag: loading: 'lazy', class: 'hp-card__img hp-card__img--primary', alt: product.title | escape }}
+                {% endif %}
+
+                {% if product.media.size > 1 %}
+                  {%- assign second = product.media[1] -%}
+                  {{ second
+                    | image_url: width: 1200
+                    | image_tag: loading: 'lazy', class: 'hp-card__img hp-card__img--secondary', alt: product.title | escape }}
+                {% endif %}
+              </div>
+
+              <div class="hp-card__meta">
+                <h3 class="hp-card__title">{{ product.title | escape }}</h3>
+                <div class="hp-card__price">
+                  {% render 'price', product: product, price_class: 'price--small' %}
+                </div>
+              </div>
+            </a>
+          </article>
+        {% endfor %}
       </div>
 
-      <div id="hp-sentinel" data-next="{% if paginate.next %}{{ paginate.next.url | escape }}{% endif %}"></div>
-    {%- endpaginate -%}
+      {% if paginate.next %}
+        <div id="hp-loadmore" data-next="{{ paginate.next.url }}"></div>
+      {% endif %}
+
+      {% if section.settings.enable_infinite and paginate.next %}
+        <script>
+          (() => {
+            const sentry = document.getElementById('hp-loadmore');
+            if (!sentry) return;
+            const grid = document.querySelector('.hp-grid.hp-grid--ald');
+            if (!grid) return;
+
+            const loadNext = async (url) => {
+              if (!url) return;
+              const current = sentry.dataset.next;
+              if (!current) return;
+              // lock to avoid double fetch
+              sentry.dataset.next = "";
+
+              try {
+                const res = await fetch(url, { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Fetch failed');
+                const html = await res.text();
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+
+                const newGridItems = doc.querySelectorAll('.hp-grid.hp-grid--ald > *');
+                newGridItems.forEach((node) => grid.appendChild(node));
+
+                const nextMarker = doc.getElementById('hp-loadmore');
+                if (nextMarker && nextMarker.dataset.next) {
+                  sentry.dataset.next = nextMarker.dataset.next;
+                } else {
+                  observer.disconnect();
+                  sentry.remove();
+                }
+              } catch (e) {
+                // on error, stop trying
+                observer.disconnect();
+              }
+            };
+
+            const observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting && sentry.dataset.next) {
+                    loadNext(sentry.dataset.next);
+                  }
+                });
+              },
+              { rootMargin: '600px 0px' }
+            );
+
+            observer.observe(sentry);
+          })();
+        </script>
+      {% endif %}
+
+      {% unless section.settings.enable_infinite %}
+        {% render 'pagination', paginate: paginate %}
+      {% endunless %}
+    {% endpaginate %}
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Collection (HumanPea ALD)",
-  "settings": []
+  "name": "HP Collection Grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "items_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_infinite",
+      "label": "Enable infinite scroll",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "HP Collection Grid"
+    }
+  ]
 }
 {% endschema %}
-
-<script>
-(() => {
-  const section = document.currentScript.closest('[data-section-id]');
-  if (!section) return;
-
-  // Toggle filters
-  section.addEventListener('click', e => {
-    const t = e.target.closest('[data-filter-toggle]');
-    if (!t) return;
-    const panel = section.querySelector('[data-filters]');
-    if (!panel) return;
-    panel.hidden = !panel.hidden;
-  });
-
-  // Infinite scroll
-  const grid = section.querySelector('#hp-grid');
-  const sentinel = section.querySelector('#hp-sentinel');
-  if (!grid || !sentinel) return;
-
-  const loadNext = async () => {
-    const next = sentinel.getAttribute('data-next');
-    if (!next) return;
-
-    // Request only this section (faster & cleaner)
-    const url = new URL(next, window.location.origin);
-    url.searchParams.set('section_id', section.dataset.sectionId);
-
-    sentinel.setAttribute('data-next', ''); // prevent double hit
-    try {
-      const res = await fetch(url.toString(), { credentials: 'same-origin' });
-      const html = await res.text();
-      const tpl = document.createElement('div');
-      tpl.innerHTML = html;
-
-      const newGrid = tpl.querySelector('#hp-grid');
-      const newSentinel = tpl.querySelector('#hp-sentinel');
-
-      if (newGrid) {
-        [...newGrid.children].forEach(n => grid.appendChild(n));
-      }
-
-      const nextUrl = newSentinel ? newSentinel.getAttribute('data-next') : '';
-      if (nextUrl) {
-        sentinel.setAttribute('data-next', nextUrl);
-        observer.observe(sentinel);
-      } else {
-        observer.disconnect();
-      }
-    } catch (e) {
-      console.error('Infinite scroll error:', e);
-    }
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    if (entries.some(e => e.isIntersecting)) {
-      observer.unobserve(sentinel);
-      loadNext();
-    }
-  }, { rootMargin: '800px 0px' });
-
-  if (sentinel.getAttribute('data-next')) observer.observe(sentinel);
-})();
-</script>
