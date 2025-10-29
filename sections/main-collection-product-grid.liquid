@@ -1,117 +1,49 @@
 {% comment %}
-  HumanPea – Full-bleed Collection Grid (ALD-style)
-  - No Dawn .page-width wrapper (edge-to-edge layout)
-  - 4 / 3 / 2 responsive columns (styled via assets/humanpea.css)
-  - Optional infinite scroll that appends next pages into the same grid
+  HUMANPEA – Collection Grid (ALD-style)
+  - 4 across desktop, responsive 3 / 2 / 1
+  - Edge-to-edge layout (safe, no overflow)
+  - Compatible with infinite scroll or standard pagination
 {% endcomment %}
 
 <section class="hp-ald" data-section-id="{{ section.id }}">
-  <!-- Sticky top bar (kept minimal; style in humanpea.css) -->
-  <div class="hp-collection__bar">
-    <button class="hp-filter-toggle" type="button">Filter</button>
-    <div class="hp-collection__title">{{ collection.title | escape }}</div>
-    <div class="hp-collection__meta"></div>
-  </div>
+  {% paginate collection.products by section.settings.items_per_page %}
+    <div class="hp-grid hp-grid--ald">
+      {% for product in collection.products %}
+        <article class="hp-card" role="article">
+          <a class="hp-card__link" href="{{ product.url }}">
+            <div class="hp-card__media">
+              {% unless product.available %}
+                <span class="hp-badge">Sold Out</span>
+              {% endunless %}
 
-  <div class="hp-collection__content">
-    {% paginate collection.products by section.settings.items_per_page %}
-      <div class="hp-grid hp-grid--ald">
-        {% for product in collection.products %}
-          <article class="hp-card" role="article">
-            <a class="hp-card__link" href="{{ product.url }}">
-              <div class="hp-card__media">
-                {% unless product.available %}
-                  <span class="hp-badge">SOLD OUT</span>
-                {% endunless %}
+              {%- assign first = product.featured_media -%}
+              {% if first %}
+                {{ first
+                  | image_url: width: 1200
+                  | image_tag: loading: 'lazy', class: 'hp-card__img hp-card__img--primary', alt: product.title | escape }}
+              {% endif %}
 
-                {%- assign first = product.featured_media -%}
-                {% if first %}
-                  {{ first
-                    | image_url: width: 1200
-                    | image_tag: loading: 'lazy', class: 'hp-card__img hp-card__img--primary', alt: product.title | escape }}
-                {% endif %}
+              {% if product.media.size > 1 %}
+                {%- assign second = product.media[1] -%}
+                {{ second
+                  | image_url: width: 1200
+                  | image_tag: loading: 'lazy', class: 'hp-card__img hp-card__img--secondary', alt: product.title | escape }}
+              {% endif %}
+            </div>
 
-                {% if product.media.size > 1 %}
-                  {%- assign second = product.media[1] -%}
-                  {{ second
-                    | image_url: width: 1200
-                    | image_tag: loading: 'lazy', class: 'hp-card__img hp-card__img--secondary', alt: product.title | escape }}
-                {% endif %}
+            <div class="hp-card__meta">
+              <h3 class="hp-card__title">{{ product.title | escape }}</h3>
+              <div class="hp-card__price">
+                {% render 'price', product: product, price_class: 'price--small' %}
               </div>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
 
-              <div class="hp-card__meta">
-                <h3 class="hp-card__title">{{ product.title | escape }}</h3>
-                <div class="hp-card__price">
-                  {% render 'price', product: product, price_class: 'price--small' %}
-                </div>
-              </div>
-            </a>
-          </article>
-        {% endfor %}
-      </div>
-
-      {% if paginate.next %}
-        <div id="hp-loadmore" data-next="{{ paginate.next.url }}"></div>
-      {% endif %}
-
-      {% if section.settings.enable_infinite and paginate.next %}
-        <script>
-          (() => {
-            const sentry = document.getElementById('hp-loadmore');
-            if (!sentry) return;
-            const grid = document.querySelector('.hp-grid.hp-grid--ald');
-            if (!grid) return;
-
-            const loadNext = async (url) => {
-              if (!url) return;
-              const current = sentry.dataset.next;
-              if (!current) return;
-              // lock to avoid double fetch
-              sentry.dataset.next = "";
-
-              try {
-                const res = await fetch(url, { credentials: 'same-origin' });
-                if (!res.ok) throw new Error('Fetch failed');
-                const html = await res.text();
-                const doc = new DOMParser().parseFromString(html, 'text/html');
-
-                const newGridItems = doc.querySelectorAll('.hp-grid.hp-grid--ald > *');
-                newGridItems.forEach((node) => grid.appendChild(node));
-
-                const nextMarker = doc.getElementById('hp-loadmore');
-                if (nextMarker && nextMarker.dataset.next) {
-                  sentry.dataset.next = nextMarker.dataset.next;
-                } else {
-                  observer.disconnect();
-                  sentry.remove();
-                }
-              } catch (e) {
-                // on error, stop trying
-                observer.disconnect();
-              }
-            };
-
-            const observer = new IntersectionObserver(
-              (entries) => {
-                entries.forEach((entry) => {
-                  if (entry.isIntersecting && sentry.dataset.next) {
-                    loadNext(sentry.dataset.next);
-                  }
-                });
-              },
-              { rootMargin: '600px 0px' }
-            );
-
-            observer.observe(sentry);
-          })();
-        </script>
-      {% endif %}
-
-      {% unless section.settings.enable_infinite %}
-        {% render 'pagination', paginate: paginate %}
-      {% endunless %}
-    {% endpaginate %}
-  </div>
+    {% render 'pagination', paginate: paginate %}
+  {% endpaginate %}
 </section>
 
 {% schema %}
@@ -126,12 +58,6 @@
       "max": 48,
       "step": 4,
       "default": 24
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_infinite",
-      "label": "Enable infinite scroll",
-      "default": true
     }
   ],
   "presets": [
