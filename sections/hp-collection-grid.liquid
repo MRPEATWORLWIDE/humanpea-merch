@@ -1,0 +1,77 @@
+{% comment %}
+  HUMANPEA — Full-bleed collection grid (independent of Dawn markup)
+{% endcomment %}
+
+<section class="hp-ald-outer">
+  <div class="hp-ald-inner">
+    {% paginate collection.products by 24 %}
+      <ul class="hp-grid">
+        {% for product in collection.products %}
+          {% assign img = product.featured_media | default: product.media.first %}
+          <li class="hp-card">
+            <a class="hp-card__link" href="{{ product.url }}">
+              <div class="hp-card__media">
+                {% if img %}
+                  <img
+                    class="hp-card__img"
+                    src="{{ img | image_url: width: 900 }}"
+                    srcset="
+                      {{ img | image_url: width: 360 }} 360w,
+                      {{ img | image_url: width: 540 }} 540w,
+                      {{ img | image_url: width: 720 }} 720w,
+                      {{ img | image_url: width: 900 }} 900w
+                    "
+                    sizes="(min-width:1200px) 25vw, (min-width:900px) 33vw, (min-width:600px) 50vw, 100vw"
+                    alt="{{ img.alt | escape }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="hp-card__placeholder" aria-hidden="true"></div>
+                {% endif %}
+
+                {% unless product.available %}
+                  <span class="hp-badge">SOLD OUT</span>
+                {% endunless %}
+              </div>
+
+              <div class="hp-card__meta">
+                <h3 class="hp-card__title">{{ product.title }}</h3>
+                <div class="hp-card__price">
+                  {% if product.compare_at_price_max > product.price %}
+                    <span class="hp-price hp-price--sale">
+                      {{ product.price | money }}
+                    </span>
+                    <span class="hp-price hp-price--compare">
+                      {{ product.compare_at_price_max | money }}
+                    </span>
+                  {% else %}
+                    <span class="hp-price">{{ product.price | money }}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {% if paginate.pages > 1 %}
+        <nav class="hp-pagination" role="navigation">
+          {% if paginate.previous %}
+            <a href="{{ paginate.previous.url }}" rel="prev">Previous</a>
+          {% endif %}
+          <span>Page {{ paginate.current_page }} of {{ paginate.pages }}</span>
+          {% if paginate.next %}
+            <a href="{{ paginate.next.url }}" rel="next">Next</a>
+          {% endif %}
+        </nav>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HP Collection Grid (Full-bleed)",
+  "settings": []
+}
+{% endschema %}
