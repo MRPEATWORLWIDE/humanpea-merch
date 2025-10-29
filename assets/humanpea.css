@@ -306,6 +306,29 @@ body {
 /* Filters panel (minimal) */
 .hp-filters{ background:#fff; border:1px solid #eee; border-radius:14px; padding:16px; }
 
+/* —— remove Dawn's fixed container on collection pages —— */
+body.template-collection .page-width,
+body.template-collection .collection,
+body.template-collection .shopify-section,
+body.template-collection .section-template {
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+body.template-collection main,
+body.template-collection .content-for-layout {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* kill stray negative margins Dawn uses around grids */
+body.template-collection .grid { margin-left: 0 !important; }
+
+/* keep our intentional side padding for the full-bleed look */
+.hp-grid { padding-inline: var(--hp-edge-pad); }
+
+
 
 
 
