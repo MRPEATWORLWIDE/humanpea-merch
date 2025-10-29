@@ -1,5 +1,5 @@
-{% comment %} HUMANPEA collection grid (ALD-style) {% endcomment %}
-<section class="hp-collection" data-section-id="{{ section.id }}">
+{% comment %} HumanPea – ALD-style collection grid with infinite scroll {% endcomment %}
+<section class="hp-collection hp-ald" data-section-id="{{ section.id }}">
   <div class="hp-collection__bar">
     <button class="hp-filter-toggle" data-filter-toggle>Filter</button>
     <h1 class="hp-collection__title">{{ collection.title | escape }}</h1>
@@ -7,41 +7,89 @@
   </div>
 
   <div class="hp-collection__content">
-    <div class="hp-filters" data-filters hidden>
+    <aside class="hp-filters" data-filters hidden>
       {%- render 'facets', results: collection, enable_filtering: true, enable_sorting: true -%}
-    </div>
+    </aside>
 
     {%- paginate collection.products by 24 -%}
-      <div class="hp-grid">
+      <div id="hp-grid" class="hp-grid hp-grid--ald">
         {%- for product in collection.products -%}
-          {%- render 'card-product', card_product: product, show_quick_add: true -%}
+          {%- render 'card-product', card_product: product, show_quick_add: false -%}
         {%- endfor -%}
       </div>
 
-      {%- if paginate.pages > 1 -%}
-        <div class="hp-pagination">
-          {%- if paginate.next -%}
-            <a class="hp-btn hp-btn--ghost" href="{{ paginate.next.url }}">Load more</a>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
+      <div id="hp-sentinel" data-next="{% if paginate.next %}{{ paginate.next.url | escape }}{% endif %}"></div>
     {%- endpaginate -%}
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Collection (HumanPea)",
+  "name": "Collection (HumanPea ALD)",
   "settings": []
 }
 {% endschema %}
 
 <script>
-  document.addEventListener('click', (e) => {
+(() => {
+  const section = document.currentScript.closest('[data-section-id]');
+  if (!section) return;
+
+  // Toggle filters
+  section.addEventListener('click', e => {
     const t = e.target.closest('[data-filter-toggle]');
     if (!t) return;
-    const panel = document.querySelector('[data-filters]');
+    const panel = section.querySelector('[data-filters]');
     if (!panel) return;
     panel.hidden = !panel.hidden;
   });
+
+  // Infinite scroll
+  const grid = section.querySelector('#hp-grid');
+  const sentinel = section.querySelector('#hp-sentinel');
+  if (!grid || !sentinel) return;
+
+  const loadNext = async () => {
+    const next = sentinel.getAttribute('data-next');
+    if (!next) return;
+
+    // Request only this section (faster & cleaner)
+    const url = new URL(next, window.location.origin);
+    url.searchParams.set('section_id', section.dataset.sectionId);
+
+    sentinel.setAttribute('data-next', ''); // prevent double hit
+    try {
+      const res = await fetch(url.toString(), { credentials: 'same-origin' });
+      const html = await res.text();
+      const tpl = document.createElement('div');
+      tpl.innerHTML = html;
+
+      const newGrid = tpl.querySelector('#hp-grid');
+      const newSentinel = tpl.querySelector('#hp-sentinel');
+
+      if (newGrid) {
+        [...newGrid.children].forEach(n => grid.appendChild(n));
+      }
+
+      const nextUrl = newSentinel ? newSentinel.getAttribute('data-next') : '';
+      if (nextUrl) {
+        sentinel.setAttribute('data-next', nextUrl);
+        observer.observe(sentinel);
+      } else {
+        observer.disconnect();
+      }
+    } catch (e) {
+      console.error('Infinite scroll error:', e);
+    }
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some(e => e.isIntersecting)) {
+      observer.unobserve(sentinel);
+      loadNext();
+    }
+  }, { rootMargin: '800px 0px' });
+
+  if (sentinel.getAttribute('data-next')) observer.observe(sentinel);
+})();
 </script>
